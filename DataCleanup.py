@@ -83,9 +83,41 @@ def tokenize_lyrics(df, verbose = False):
 
 
 
+"""
+    Create the vocabulary in the data
+"""
+def create_vocabulary(df, verbose = False):
+    # create union of all the words
+    vocabulary = set()
+    for index, row in df.iterrows():
+        vocabulary = vocabulary.union(set(row["Lyrics"]))
+    
+    # sorted in alphabetical order so that it is easier to read
+    vocabulary = sorted(list(vocabulary))
+
+    if verbose == True:
+        print("VOCAB: ")
+        print(vocabulary)
+
+    return vocabulary
+
+
+
+"""
+    Save the set as a pickle
+"""
+def save_set(s, name):
+    with open(name, "wb") as handle:
+        pickle.dump(s, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+
+
 if __name__ == "__main__":
     df = convert_to_df(False)
     df = clean_data(df, False)
     save_df(df, "SongArtistLyricsCleaned.pkl")
     df = tokenize_lyrics(df, False)
     save_df(df, "SongArtistLyricsTokenized.pkl")
+    vocabulary = create_vocabulary(df, False)
+    save_set(vocabulary, "Vocabulary.pkl")
+
