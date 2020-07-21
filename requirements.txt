@@ -1,1 +1,4 @@
 lyricsgenius
+pickle
+nltk
+pandas
