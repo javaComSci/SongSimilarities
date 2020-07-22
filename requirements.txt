@@ -2,3 +2,4 @@ lyricsgenius
 pickle
 nltk
 pandas
+numpy
