@@ -1,7 +1,9 @@
 import pickle
 import pandas as pd
 import numpy as np
-
+from matplotlib import pyplot
+from sklearn.decomposition import PCA
+from collections import Counter
 
 """
     Similarity checker class that checks songs that are similar to each other
@@ -26,6 +28,7 @@ class SimilarityChecker:
         self.song_artist_to_embeddings = {}
         self.artist_to_embeddings = {}
         self.artist_song_counts = {}
+        self.artist_to_words = {}
 
         # calculate for every song
         for index, row in self.song_artist_tokenized.iterrows():
@@ -47,6 +50,11 @@ class SimilarityChecker:
                     embedding_value += embeddings
                     valid_words_counts += 1
 
+                    if artist in self.artist_to_words:
+                        self.artist_to_words[artist].append(token)
+                    else:
+                        self.artist_to_words[artist] = [token]
+
             # for artists
             if artist in self.artist_to_embeddings:
                 self.artist_to_embeddings[artist] += embedding_value
@@ -66,8 +74,19 @@ class SimilarityChecker:
         # take the average for each artist
         for artist in self.artist_to_embeddings.keys():
             self.artist_to_embeddings[artist] /= self.artist_song_counts[artist]
+            self.artist_to_embeddings[artist] = np.squeeze(self.artist_to_embeddings[artist])
         
-        print(self.song_artist_to_embeddings.keys())
+        # make one dimensional
+        for song_artist in self.song_artist_to_embeddings.keys():
+            self.song_artist_to_embeddings[song_artist] = np.squeeze(self.song_artist_to_embeddings[song_artist])
+        
+
+        # look at common words of artist
+        for artist in self.artist_to_words.keys():
+            counter = Counter(self.artist_to_words[artist])
+            print("ARTIST: ", artist)
+            print(counter.most_common(20))
+        # print(self.song_artist_to_embeddings.keys())
     
 
 
@@ -90,6 +109,26 @@ class SimilarityChecker:
         return similarity
 
 
+    """
+        Do dimensionality reduction
+    """
+    def pca(self, data):
+
+        # reduce the dimensionality
+        value_data = np.array(list(data.values())).astype(float)
+        pca = PCA(n_components = 2)
+        print(value_data.shape)
+        reduced_data = pca.fit_transform(value_data, (180, 50))
+
+        pyplot.scatter(reduced_data[:, 0], reduced_data[:, 1])
+
+        for i, word in enumerate(list(data.keys())[:]):
+            pyplot.annotate(word, xy=(reduced_data[i, 0], reduced_data[i, 1]))
+
+        pyplot.show()
+        print(len(reduced_data))
+
+
 
 if __name__ == "__main__":
     # load up necessary information to get word information
@@ -108,6 +147,8 @@ if __name__ == "__main__":
 
     # similarity_checker.calculate_overall_similarities()
 
-    a = ('Water Under the Bridge', 'Adele')
-    b = ('Barcelona', 'Ed Sheeran')
-    similarity_checker.cosine_similarity(similarity_checker.song_artist_to_embeddings, a, b)
+    # a = ('Water Under the Bridge', 'Adele')
+    # b = ('Barcelona', 'Ed Sheeran')
+    # similarity_checker.cosine_similarity(similarity_checker.song_artist_to_embeddings, a, b)
+
+    similarity_checker.pca(similarity_checker.artist_to_embeddings)

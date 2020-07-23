@@ -3,3 +3,4 @@ pickle
 nltk
 pandas
 numpy
+matplotlib
