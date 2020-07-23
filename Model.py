@@ -66,7 +66,7 @@ class Model:
         print(model.predict(self.inputs))
 
         # save updated model
-        model.save("TrainedModel")
+        model.save("NewTrainedModel")
 
     
 
@@ -75,7 +75,7 @@ class Model:
     """
     def extract_weights(self):
         # load model for extracting weights
-        model = keras.models.load_model("TrainedModel")
+        model = keras.models.load_model("NewTrainedModel")
 
         # get the weights between each layer
         weights = model.get_weights()
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     # create the model with given parameters
     vocab_size = 4350
     hidden_layer_size = 50
-    batch_size = 120
+    batch_size = 250
 
     # obtain the inputs and outputs from the saved numpy files
     inputs = np.load("ContextInputs.npy")
@@ -114,7 +114,7 @@ if __name__ == "__main__":
     
     model = Model(vocab_size, hidden_layer_size, batch_size, inputs, outputs)
 
-    model.train()
+    # model.train()
 
     # model.continue_train()
 

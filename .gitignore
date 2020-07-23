@@ -1,3 +1,10 @@
 ContextInputs.npy
 WordOutputs.npy
 OneHotVectors.npy
+WordEmbeddings.npy
+TrainedModel/saved_model.pb
+TrainedModel/variables/*
+TrainedModel/assets/*
+NewTrainedModel/*
+NewTrainedModel/variables/*
+NewTrainedModel/assets/*
