@@ -23,7 +23,6 @@ class Model:
         # training data for model
         self.inputs = inputs.T
         self.outputs = outputs.T
-    
 
     """
         Train and create model
@@ -115,7 +114,7 @@ if __name__ == "__main__":
     
     model = Model(vocab_size, hidden_layer_size, batch_size, inputs, outputs)
 
-    # model.train()
+    model.train()
 
     # model.continue_train()
 
