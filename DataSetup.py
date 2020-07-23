@@ -30,6 +30,7 @@ def get_artists_songs(genius, verbose = False):
     
     # pickle the information for later use
     with open("SongArtistLyrics.pickle", "wb") as handle:
+        # pickle.dump({"testing1": data}, handle, protocol=pickle.HIGHEST_PROTOCOL)
         pickle.dump(song_artist_to_lyrics, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 

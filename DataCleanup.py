@@ -3,6 +3,8 @@ import pandas as pd
 import better_profanity
 import nltk
 from nltk.tokenize import word_tokenize
+from collections import Counter
+
 # nltk.download('punkt')
 
 """
@@ -36,8 +38,10 @@ def clean_text(text, verbose = False):
 def clean_data(df, verbose = False):
     # change to lowercase and take care of punctuation
     df["Lyrics"] = df["Lyrics"].str.lower()
-    df["Lyrics"] = df["Lyrics"].str.replace("\n", " ")
     df["Lyrics"] = df["Lyrics"].str.replace(",", ".")
+    df["Lyrics"] = df["Lyrics"].str.replace("?", ".")
+    df["Lyrics"] = df["Lyrics"].str.replace(":", ".")
+    df["Lyrics"] = df["Lyrics"].str.replace(";", ".")
 
     # remove all bad language from songs
     better_profanity.profanity.load_censor_words()
@@ -89,15 +93,19 @@ def tokenize_lyrics(df, verbose = False):
 def create_vocabulary(df, verbose = False):
     # create union of all the words
     vocabulary = set()
+    vocabulary_list = list()
+
     for index, row in df.iterrows():
         vocabulary = vocabulary.union(set(row["Lyrics"]))
+        vocabulary_list += row["Lyrics"]
     
     # sorted in alphabetical order so that it is easier to read
     vocabulary = sorted(list(vocabulary))
 
     if verbose == True:
         print("VOCAB: ")
-        print(vocabulary)
+        counter = Counter(vocabulary_list)
+        print(counter)
 
     return vocabulary
 
@@ -114,10 +122,10 @@ def save_set(s, name):
 
 if __name__ == "__main__":
     df = convert_to_df(False)
-    df = clean_data(df, False)
+    df = clean_data(df, True)
     save_df(df, "SongArtistLyricsCleaned.pkl")
-    df = tokenize_lyrics(df, False)
+    df = tokenize_lyrics(df, True)
     save_df(df, "SongArtistLyricsTokenized.pkl")
-    vocabulary = create_vocabulary(df, False)
+    vocabulary = create_vocabulary(df, True)
     save_set(vocabulary, "Vocabulary.pkl")
 

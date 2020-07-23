@@ -29,6 +29,12 @@ class Vectorizer():
             self.word_to_index[word] = index
             self.index_to_word[index] = word
 
+        np.save("OneHotVectors", self.one_hot_vectors)
+        with open('WordToIndex.pickle', 'wb') as handle:
+            pickle.dump(self.word_to_index, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        with open('IndexToWord.pickle', 'wb') as handle:
+            pickle.dump(self.index_to_word, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
         return self.one_hot_vectors
     
 
@@ -74,6 +80,7 @@ class Vectorizer():
 
         if verbose == True:
             print("SHAPE OF VECTORS CREATED: ", one_hot_vectors.shape)
+            print("VOCAB", vocab)
 
         # get the tokens for each song
         song_artist_lyrics_df = pd.read_pickle("SongArtistLyricsTokenized.pkl")
@@ -87,7 +94,7 @@ class Vectorizer():
 
         # create the input context and output word for each of the words
         for index, row in song_artist_lyrics_df.iterrows():
-            
+
             # temp stack for specific song
             first_addition = True
             temp_inputs = None
@@ -140,6 +147,8 @@ class Vectorizer():
             print("WORD OUTPUTS SHAPE: ", self.word_outputs.shape)
             # print(np.nonzero(self.context_inputs[:,0]))
             # print(self.context_inputs[:,0].shape)
+            print(self.context_inputs)
+            print(self.word_outputs)
         
 
         # save the inputs and outputs as a pickle
